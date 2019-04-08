@@ -1,0 +1,11 @@
+AllCops:
+  Exclude:
+    - 'Rakefile'
+    - 'Gemfile'
+    - 'config.ru'
+    - 'bin/**/*'
+    - 'config/**/*'
+    - 'db/**/*'
+
+Metrics/LineLength:
+  Max: 120

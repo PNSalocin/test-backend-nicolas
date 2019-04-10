@@ -13,6 +13,6 @@ class UsersController < ApplicationController #:nodoc:
     users = apply_scopes(User).all
     return head(:no_content) if users.blank?
 
-    render json: users
+    render json: users, methods: [:glycemia_count, :glycemia_average]
   end
 end

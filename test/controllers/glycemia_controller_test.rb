@@ -40,10 +40,10 @@ class GlycemiaControllerTest < ActionDispatch::IntegrationTest
     assert_response :no_content
   end
 
-  test 'GET user_glycemia_index should raises ActiveRecord::RecordNotFound when no user is found' do
-    assert_raises(ActiveRecord::RecordNotFound) do
-      get user_glycemia_index_url(1), as: :json
-    end
+  test 'GET user_glycemia_index should return :not_found status code when no user is found' do
+    get user_glycemia_index_url(1), as: :json
+
+    assert_response :not_found
   end
 
   # show
@@ -59,18 +59,18 @@ class GlycemiaControllerTest < ActionDispatch::IntegrationTest
     test_one(user_glycemia_url(user1.id, user1_glycemia1.id))
   end
 
-  test 'GET user_glycemia should raises ActiveRecord::RecordNotFound when no user is found' do
-    assert_raises(ActiveRecord::RecordNotFound) do
-      get user_glycemia_url(1, 1), as: :json
-    end
+  test 'GET user_glycemia should return :not_found status code when no user is found' do
+    get user_glycemia_url(1, 1), as: :json
+
+    assert_response :not_found
   end
 
-  test 'GET user_glycemia should raises ActiveRecord::RecordNotFound when no glycemia is found for user' do
+  test 'GET user_glycemia should return :not_found status code when no glycemia is found for user' do
     user = create(:user)
 
-    assert_raises(ActiveRecord::RecordNotFound) do
-      get user_glycemia_url(user.id, 1), as: :json
-    end
+    get user_glycemia_url(user.id, 1), as: :json
+
+    assert_response :not_found
   end
 
   # create
@@ -85,7 +85,7 @@ class GlycemiaControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :created
-    test_json_glycemia(JSON.parse(@response.body))
+    test_json_glycemia(@response.parsed_body)
   end
 
   test 'POST user_glycemia with invalid request should return :unprocessable_entity status code' do
@@ -95,10 +95,10 @@ class GlycemiaControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
-  test 'POST user_glycemia with invalid user should raises ActiveRecord::RecordNotFound' do
-    assert_raises(ActiveRecord::RecordNotFound) do
-      post user_glycemia_index_url(1), params: { glycemia: Glycemia.new }, as: :json
-    end
+  test 'POST user_glycemia with invalid user should return :not_found status code' do
+    post user_glycemia_index_url(1), params: { glycemia: Glycemia.new }, as: :json
+
+    assert_response :not_found
   end
 
   # update
@@ -112,7 +112,7 @@ class GlycemiaControllerTest < ActionDispatch::IntegrationTest
     patch user_glycemia_url(user.id, glycemia.id), params: { glycemia: glycemia }, as: :json
 
     assert_response :success
-    test_json_glycemia(JSON.parse(@response.body))
+    test_json_glycemia(@response.parsed_body)
   end
 
   test 'PUT/PATCH user_glycemia with invalid request should return :unprocessable_entity status code' do
@@ -124,18 +124,18 @@ class GlycemiaControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
-  test 'PUT/PATCH user_glycemia with invalid user should raises ActiveRecord::RecordNotFound' do
-    assert_raises(ActiveRecord::RecordNotFound) do
-      patch user_glycemia_url(1, 1), params: { glycemia: Glycemia.new }, as: :json
-    end
+  test 'PUT/PATCH user_glycemia with invalid user should return :not_found status code' do
+    patch user_glycemia_url(1, 1), params: { glycemia: Glycemia.new }, as: :json
+
+    assert_response :not_found
   end
 
-  test 'PUT/PATCH user_glycemia with valid user and invalid glycemia id should raise ActiveRecord::RecordNotFound' do
+  test 'PUT/PATCH user_glycemia with valid user and invalid glycemia id should return :not_found status code' do
     user = create(:user)
 
-    assert_raises(ActiveRecord::RecordNotFound) do
-      patch user_glycemia_url(user.id, 1), as: :json
-    end
+    patch user_glycemia_url(user.id, 1), as: :json
+
+    assert_response :not_found
   end
 
   # delete
@@ -150,18 +150,18 @@ class GlycemiaControllerTest < ActionDispatch::IntegrationTest
     assert_response :no_content
   end
 
-  test 'DELETE user_glycemia with invalid user should raises ActiveRecord::RecordNotFound' do
-    assert_raises(ActiveRecord::RecordNotFound) do
-      delete user_glycemia_url(1, 1), params: { glycemia: Glycemia.new }, as: :json
-    end
+  test 'DELETE user_glycemia with invalid user should return :not_found status code' do
+    delete user_glycemia_url(1, 1), params: { glycemia: Glycemia.new }, as: :json
+
+    assert_response :not_found
   end
 
-  test 'DELETE user_glycemia with valid user and invalid glycemia id should raise ActiveRecord::RecordNotFound' do
+  test 'DELETE user_glycemia with valid user and invalid glycemia id should return :not_found status code' do
     user = create(:user)
 
-    assert_raises(ActiveRecord::RecordNotFound) do
-      delete user_glycemia_url(user.id, 1), as: :json
-    end
+    delete user_glycemia_url(user.id, 1), as: :json
+
+    assert_response :not_found
   end
 
   private
@@ -183,7 +183,7 @@ class GlycemiaControllerTest < ActionDispatch::IntegrationTest
     get route, as: :json
 
     assert_response :success
-    JSON.parse(@response.body)
+    @response.parsed_body
   end
 
   def test_json_glycemia(json_glycemia)

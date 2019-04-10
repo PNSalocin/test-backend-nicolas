@@ -7,7 +7,11 @@ class GlycemiaController < ApplicationController #:nodoc:
   # GET /glycemia
   # GET /user/{user_id}/glycemia
   def index
-    glycemia = params[:user_id].present? ? User.find(params[:user_id]).glycemia.all : Glycemia.all
+    glycemia = if params[:user_id].present?
+                 User.find(params[:user_id]).glycemia.all
+               else
+                 Glycemia.all
+               end
     return head(:no_content) if glycemia.blank?
 
     render json: glycemia

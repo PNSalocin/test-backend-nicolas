@@ -4,6 +4,12 @@
 class User < ApplicationRecord
   has_many :glycemia
 
+  scope :by_gender, ->(gender) { where(gender: gender) }
+  scope :by_age, ->(age) { where(age: age) }
+  scope :by_age_minimum, ->(minimum) { where('age >= ?', minimum) }
+  scope :by_age_maximum, ->(maximum) { where('age <= ?', maximum) }
+  scope :by_age_range, ->(minimum, maximum) { by_age_minimum(minimum).by_age_maximum(maximum) }
+
   enum gender: %i[unknown_gender male female other_gender]
 
   # Returns the count of glycemia entries for user
